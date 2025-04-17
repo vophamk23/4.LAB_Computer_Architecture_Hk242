@@ -1,0 +1,58 @@
+#Xuat chuoi
+	.macro 	puts(%str_var)
+		la 	$a0, %str_var	# Tai dia chi cua chuoi
+		addi	$v0, $zero, 4 	# Syscall de in/xuat chuoi
+		syscall 
+	.end_macro
+# Nhap chuoi 
+    	.macro gets(%buffer, %size)
+   		la  $a0, %buffer  # Dia chi cua buffer 
+    		li  $a1, %size    # Do dài Max caa chuoi (bao gom NULL)
+    		li  $v0, 8        # Syscall 8: Nhap chuoi
+  	 	syscall
+	.end_macro
+	
+#Nhap so Nguyen voi Thong bao = Xuat Thong bao + Nhap so (int)
+	.macro 	geti_p(%prompt, %int_var)
+		puts 	%prompt	 # In/Xuat chuoi loi nhac "Nhap_a" => Goi lai mac xuat ra chuoi
+		li	$v0, 5		 # Syscall de nhap so nguyên
+		syscall
+		sw	 $v0, %int_var	# Luu giá tri vào bo nho
+	.end_macro
+#Xuat so Nguyen voi Thong bao = Xuat thong bao + Ket qua (int)
+	.macro 	puti_p(%prompt, %int_var)
+		puts 	%prompt	# In loi nhac Xuat Chuoi
+		lw	$a0, %int_var	# Tai giá tri tu bo nho
+		li   	$v0, 1  		# Syscall de in/xuat so nguyên
+		syscall
+	.end_macro   
+	
+#Xuat so Nguyen Khong thong bao
+	.macro 	puti_Notp(%int_var)
+		lw	$a0, %int_var	# Tai giá tri tu bo nho
+		li   	$v0, 1  		# Syscall de in/xuat so nguyên
+		syscall
+	.end_macro   
+	
+#Xuat so Thuc voi Thong bao (float)
+	.macro putf_p(%prompt, %flo_addr)
+ 		puts 	%prompt 	# In thong bao duoc truyen vao
+ 		lwc1 	$f12, %flo_addr	# Load so thuc tu ?ia chi vao thanh ghi $f12
+ 		li 	$v0, 2		# ?at $v0 = 2 de goi syscall in so thuc
+ 		syscall			# Goi syscall de in so thuc
+ 	.end_macro
+ 	
+# Nhap so Thuc voi Thong bao (float)
+	.macro getf_p(%prompt, %flo_add)
+		puts	%prompt
+		li	$v0, 6
+		syscall
+		sw 	$v0, %flo_add
+	.end_macro
+	
+ # Macro de in dong moi
+	.macro linefeed
+   		li $v0, 11          # Syscall 11: in ký t?
+    		li $a0, 10          # Ký t? '\n' (ASCII 10)
+    		syscall
+	.end_macro
